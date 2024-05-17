@@ -1,0 +1,17 @@
+.section-snackbar {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.section-link_snackbar {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  font-size: 20px;
+}
+
+.section-link_snackbar:hover,
+.section-link_snackbar:focus {
+  color: #4e75ff;
+}
