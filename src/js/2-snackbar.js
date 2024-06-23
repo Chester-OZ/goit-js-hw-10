@@ -1,47 +1,37 @@
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
+import { errorFlagSnackbar, successFlagSnackbar } from '../modules/iziToast';
 
 const form = document.querySelector('.form');
 
 form.addEventListener('submit', function (event) {
   event.preventDefault();
 
-  const delayInput = document.querySelector("input[name='delay']");
-  const delay = parseInt(delayInput.value);
+  const input = document.querySelector('input[name="delay"]');
+  const state = document.querySelector('input[name="state"]:checked');
 
-  const stateRadio = document.querySelector("input[name='state']:checked");
-  const state = stateRadio ? stateRadio.value : null;
+  const toast = new Promise((resolve, reject) => {
+    const delay = input.value;
 
-  if (delay && state) {
-    const promise = new Promise((resolve, reject) => {
-      if (state === 'fulfilled') {
-        setTimeout(() => resolve(delay), delay);
-      } else if (state === 'rejected') {
-        setTimeout(() => reject(delay), delay);
-      }
+    if (state.value === 'fulfilled') {
+      setTimeout(() => {
+        resolve(delay);
+      }, delay);
+    }
+    if (state.value === 'rejected') {
+      setTimeout(() => {
+        reject(delay);
+      }, delay);
+    }
+  });
+
+  toast
+    .then(delay => {
+      successFlagSnackbar(delay);
+    })
+    .catch(delay => {
+      errorFlagSnackbar(delay);
+    })
+    .finally(() => {
+      input.value = '';
+      state.checked = false;
     });
-
-    promise.then(
-      delay => {
-        iziToast.success({
-          title: 'Success',
-          message: `✅ Fulfilled promise in ${delay}ms`,
-        });
-      },
-      delay => {
-        iziToast.error({
-          title: 'Error',
-          message: `❌ Rejected promise in ${delay}ms`,
-        });
-      }
-    );
-  } else {
-    iziToast.warning({
-      title: 'Warning',
-      message: 'Please fill in all fields.',
-    });
-  }
-
-  delayInput.value = '';
-  stateRadio.checked = false;
 });
